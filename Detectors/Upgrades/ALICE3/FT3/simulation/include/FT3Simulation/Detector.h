@@ -135,6 +135,9 @@ class Detector : public o2::base::DetImpl<Detector>
     double mEnergyLoss;            //! energy loss
   } mTrackData;                    //!
 
+  /// Factor to scale Z dimensions
+  float mZFactor = 0.5;
+
   /// Container for hit data
   std::vector<o2::itsmft::Hit>* mHits;
 

@@ -22,12 +22,12 @@
 #include "SimulationDataFormat/TrackReference.h"
 
 // FairRoot includes
-#include "FairDetector.h"    // for FairDetector
+#include "FairDetector.h"      // for FairDetector
 #include <fairlogger/Logger.h> // for LOG, LOG_IF
-#include "FairRootManager.h" // for FairRootManager
-#include "FairRun.h"         // for FairRun
-#include "FairRuntimeDb.h"   // for FairRuntimeDb
-#include "FairVolume.h"      // for FairVolume
+#include "FairRootManager.h"   // for FairRootManager
+#include "FairRun.h"           // for FairRun
+#include "FairRuntimeDb.h"     // for FairRuntimeDb
+#include "FairVolume.h"        // for FairVolume
 #include "FairRootManager.h"
 
 #include "TGeoManager.h"     // for TGeoManager, gGeoManager
@@ -177,8 +177,8 @@ void Detector::buildBasicFT3(const FT3BaseParam& param)
 //_________________________________________________________________________________________________
 void Detector::buildFT3V1()
 {
-  //Build FT3 detector according to
-  //https://indico.cern.ch/event/992488/contributions/4174473/attachments/2168881/3661331/tracker_parameters_werner_jan_11_2021.pdf
+  // Build FT3 detector according to
+  // https://indico.cern.ch/event/992488/contributions/4174473/attachments/2168881/3661331/tracker_parameters_werner_jan_11_2021.pdf
 
   LOG(info) << "Building FT3 Detector: V1";
 
@@ -228,23 +228,24 @@ void Detector::buildFT3V3b()
   // https://www.overleaf.com/project/6051acc870e39aaeb4653621
 
   LOG(info) << "Building FT3 Detector: V3b";
+  LOG(info) << "using the zFactor:" << mZFactor;
 
   mNumberOfLayers = 12;
   Float_t sensorThickness = 30.e-4;
   Float_t layersx2X0 = 1.e-2;
   std::vector<std::array<Float_t, 5>> layersConfig{
-    {26., .5, 3., 0.1f * layersx2X0}, // {z_layer, r_in, r_out, Layerx2X0}
-    {30., .5, 3., 0.1f * layersx2X0},
-    {34., .5, 3., 0.1f * layersx2X0},
-    {77., 5.0, 35., layersx2X0},
-    {100., 5.0, 35., layersx2X0},
-    {122., 5.0, 35., layersx2X0},
-    {150., 5.5, 80.f, layersx2X0},
-    {180., 6.6, 80.f, layersx2X0},
-    {220., 8.1, 80.f, layersx2X0},
-    {279., 10.2, 80.f, layersx2X0},
-    {340., 12.5, 80.f, layersx2X0},
-    {400., 14.7, 80.f, layersx2X0}};
+    {26. * mZFactor, .5, 3., 0.1f * layersx2X0}, // {z_layer, r_in, r_out, Layerx2X0}
+    {30. * mZFactor, .5, 3., 0.1f * layersx2X0},
+    {34. * mZFactor, .5, 3., 0.1f * layersx2X0},
+    {77. * mZFactor, 5.0, 35., layersx2X0},
+    {100. * mZFactor, 5.0, 35., layersx2X0},
+    {122. * mZFactor, 5.0, 35., layersx2X0},
+    {150. * mZFactor, 5.5, 80.f, layersx2X0},
+    {180. * mZFactor, 6.6, 80.f, layersx2X0},
+    {220. * mZFactor, 8.1, 80.f, layersx2X0},
+    {279. * mZFactor, 10.2, 80.f, layersx2X0},
+    {340. * mZFactor, 12.5, 80.f, layersx2X0},
+    {400. * mZFactor, 14.7, 80.f, layersx2X0}};
 
   mLayerName.resize(2);
   mLayerName[0].resize(mNumberOfLayers);

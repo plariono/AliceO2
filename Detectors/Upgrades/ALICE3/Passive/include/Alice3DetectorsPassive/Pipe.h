@@ -66,6 +66,9 @@ class Alice3Pipe : public Alice3PassiveBase
 
   bool mIsTRKActivated = true; // If TRK is not active don't create TRK layers allocations in the vacuum volume
 
+  /// Factor to scale Z dimensions
+  float mZFactor = 0.5;
+
   ClassDefOverride(Alice3Pipe, 1);
 };
 } // namespace passive

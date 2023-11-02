@@ -82,6 +82,9 @@ class Detector : public o2::base::DetImpl<Detector>
   std::vector<TRKLayer> mLayers;
   TRKServices mServices;
 
+  /// Factor to scale Z dimensions
+  float mZFactor = 0.5;
+
   void defineSensitiveVolumes();
 
   template <typename Det>

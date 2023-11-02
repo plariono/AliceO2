@@ -115,9 +115,9 @@ void Alice3Pipe::ConstructGeometry()
   if (!mIsTRKActivated) {
     std::vector<TGeoTube*> trkLayerShapes;
 
-    std::vector<std::array<float, 3>> layersQuotas = {std::array<float, 3>{0.5f, 50.f, 50.e-4}, // TODO: Set layers dynamically. {radius, zLen, thickness}
-                                                      std::array<float, 3>{1.2f, 50.f, 50.e-4},
-                                                      std::array<float, 3>{2.5f, 50.f, 50.e-4}};
+    std::vector<std::array<float, 3>> layersQuotas = {std::array<float, 3>{0.5f, 50.f * mZFactor, 50.e-4}, // TODO: Set layers dynamically. {radius, zLen, thickness}
+                                                      std::array<float, 3>{1.2f, 50.f * mZFactor, 50.e-4},
+                                                      std::array<float, 3>{2.5f, 50.f * mZFactor, 50.e-4}};
 
     subtractorsFormula = "TRKLAYER_0sh";                           // First volume to be subctracted (at least one has to be provided)
     for (auto iLayer{0}; iLayer < layersQuotas.size(); ++iLayer) { // Create TRK layers shapes
@@ -129,8 +129,29 @@ void Alice3Pipe::ConstructGeometry()
     }
 
     // Escavate vacuum for hosting cold plate
-    TGeoTube* coldPlate = new TGeoTube("TRK_COLDPLATEsh", 2.6f, 2.6f + 150.e-3, 50.f);
+    TGeoTube* coldPlate = new TGeoTube("TRK_COLDPLATEsh", 2.6f, 2.6f + 150.e-3, 50.f * mZFactor / 2);
     subtractorsFormula += "+TRK_COLDPLATEsh";
+
+    // Escavate vacuum for hosting the inner disks
+    auto idisk_thickness = 0.1f * 1.e-2 * 9.5;
+
+    Double_t idisk_1_pos[3] = {0., 0., 26. * mZFactor + idisk_thickness / 2};
+    Double_t idisk_2_pos[3] = {0., 0., 30. * mZFactor + idisk_thickness / 2};
+    Double_t idisk_3_pos[3] = {0., 0., 34. * mZFactor + idisk_thickness / 2};
+
+    Double_t idisk_1_neg[3] = {0., 0., -1 * 26. * mZFactor + idisk_thickness / 2};
+    Double_t idisk_2_neg[3] = {0., 0., -1 * 30. * mZFactor + idisk_thickness / 2};
+    Double_t idisk_3_neg[3] = {0., 0., -1 * 34. * mZFactor + idisk_thickness / 2};
+
+    TGeoBBox* ibox_1_pos = new TGeoBBox("ibox_1_pos", 4., 4., idisk_thickness / 2, idisk_1_pos);
+    TGeoBBox* ibox_2_pos = new TGeoBBox("ibox_2_pos", 4., 4., idisk_thickness / 2, idisk_2_pos);
+    TGeoBBox* ibox_3_pos = new TGeoBBox("ibox_3_pos", 4., 4., idisk_thickness / 2, idisk_3_pos);
+
+    TGeoBBox* ibox_1_neg = new TGeoBBox("ibox_1_neg", 4., 4., idisk_thickness / 2, idisk_1_neg);
+    TGeoBBox* ibox_2_neg = new TGeoBBox("ibox_2_neg", 4., 4., idisk_thickness / 2, idisk_2_neg);
+    TGeoBBox* ibox_3_neg = new TGeoBBox("ibox_3_neg", 4., 4., idisk_thickness / 2, idisk_3_neg);
+
+    subtractorsFormula += "+ibox_1_pos + ibox_2_pos + ibox_3_pos + ibox_1_neg + ibox_2_neg + ibox_3_neg";
 
     LOG(info) << "Subtractors formula before : " << subtractorsFormula;
     subtractorsFormula = Form("-(%s)", subtractorsFormula.Data());
