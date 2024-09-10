@@ -291,15 +291,15 @@ void Detector::buildFT3Scoping()
     {26., .5, 2.5, 0.1f * layersx2X0}, // {z_layer, r_in, r_out, Layerx2X0}
     {30., .5, 2.5, 0.1f * layersx2X0},
     {34., .5, 2.5, 0.1f * layersx2X0},
-    {77., 5.0, 35., layersx2X0},
-    {100., 5.0, 35., layersx2X0},
-    {122., 5.0, 35., layersx2X0},
-    {150., 5.0, 68.f, layersx2X0},
-    {180., 5.0, 68.f, layersx2X0},
-    {220., 5.0, 68.f, layersx2X0},
-    {260., 5.0, 68.f, layersx2X0},
-    {300., 5.0, 68.f, layersx2X0},
-    {350., 5.0, 68.f, layersx2X0}};
+    {77., 7.0, 35., layersx2X0},
+    {100., 7.0, 35., layersx2X0},
+    {122., 7.0, 35., layersx2X0},
+    {150., 7.0, 68.f, layersx2X0},
+    {180., 7.0, 68.f, layersx2X0},
+    {220., 7.0, 68.f, layersx2X0},
+    {260., 7.0, 68.f, layersx2X0},
+    {300., 7.0, 68.f, layersx2X0},
+    {350., 7.0, 68.f, layersx2X0}};
 
   mLayerName.resize(2);
   mLayerName[0].resize(mNumberOfLayers);
