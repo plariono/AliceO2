@@ -177,6 +177,23 @@ void TRKServices::createColdplate(TGeoVolume* motherVolume)
   LOGP(info, "Creating IRIS Tracker vacuum vessel");
   LOGP(info, "Inserting {} in {} ", irisVacuumVesselVolume->GetName(), motherVolume->GetName());
   motherVolume->AddNode(irisVacuumVesselVolume, 1, nullptr);
+
+  // Adding the aluminum cylinder to represent additional services estimated by A. Dainese
+
+  TGeoMaterial* matAluminum = new TGeoMaterial("Aluminum", 26.98, 13, 2.7);
+  TGeoMedium* Aluminum = new TGeoMedium("Aluminum", 1, matAluminum);
+
+  // Define the cylinder dimensions
+  Double_t rmin = 3.5;          // Inner radius
+  Double_t rmax = rmin + 0.133; // Outer radius
+  Double_t halfLength = 30.5;   // Half length of the cylinder (change as necessary)
+
+  TGeoTube* addServicesEta34 = new TGeoTube("TRK_addServicesEta34sh", rmin, rmax, halfLength);
+  TGeoVolume* addServicesEta34Volume = new TGeoVolume("TRK_addServicesEta34", addServicesEta34, Aluminum);
+  TGeoTranslation* trans = new TGeoTranslation(0, 0, -1 * (39.0 + halfLength));
+  coldPlateVolume->SetVisibility(1);
+  coldPlateVolume->SetLineColor(9);
+  motherVolume->AddNode(addServicesEta34Volume, 1, trans);
 }
 
 void TRKServices::createOuterDisksServices(TGeoVolume* motherVolume)

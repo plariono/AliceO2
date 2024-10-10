@@ -158,6 +158,16 @@ void Alice3Pipe::ConstructGeometry()
     TGeoTranslation* posIrisVacVWallPosZSide = new TGeoTranslation("IRISWALLPOSZ", 0., 0., irisVacuumVesselLength / 2. + irisVacuumVesselThick / 2.);
     posIrisVacVWallPosZSide->RegisterYourself();
     subtractorsFormula += "+TRK_IRISVACUUMVESSELWALLsh:IRISWALLPOSZ";
+
+    // Define the cylinder dimensions
+    Double_t rmin = 3.5;          // Inner radius
+    Double_t rmax = rmin + 0.133; // Outer radius
+    Double_t halfLength = 30.5;   // Half length of the cylinder (change as necessary)
+
+    TGeoTube* addServicesEta34 = new TGeoTube("TRK_addServicesEta34sh", rmin, rmax, halfLength);
+    TGeoTranslation* trans = new TGeoTranslation("TRK_addServicesEta34POSZ", 0, 0, -1 * (39.0 + halfLength));
+    trans->RegisterYourself();
+    subtractorsFormula += "+TRK_addServicesEta34sh:TRK_addServicesEta34POSZ";
   }
 
   if (!mIsFT3Activated) {
