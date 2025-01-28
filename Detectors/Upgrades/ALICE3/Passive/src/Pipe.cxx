@@ -160,14 +160,24 @@ void Alice3Pipe::ConstructGeometry()
     subtractorsFormula += "+TRK_IRISVACUUMVESSELWALLsh:IRISWALLPOSZ";
 
     // Define the cylinder dimensions
-    Double_t rmin = 3.5;          // Inner radius
-    Double_t rmax = rmin + 0.133; // Outer radius
-    Double_t halfLength = 30.5;   // Half length of the cylinder (change as necessary)
+    Double_t rMinNeg = 3.5;             // Inner radius
+    Double_t rMaxNeg = rMinNeg + 0.133; // Outer radius + thickness (def 0.133, 0.33% X0 = 0.0294, 2% X0 = 0.1779, 3% X0 = 0.2669)
+    Double_t halfLengthNeg = 30.5;      // Half length of the cylinder (change as necessary)
 
-    TGeoTube* addServicesEta34 = new TGeoTube("TRK_addServicesEta34sh", rmin, rmax, halfLength);
-    TGeoTranslation* trans = new TGeoTranslation("TRK_addServicesEta34POSZ", 0, 0, -1 * (39.0 + halfLength));
-    trans->RegisterYourself();
-    subtractorsFormula += "+TRK_addServicesEta34sh:TRK_addServicesEta34POSZ";
+    Double_t rMinPos = 3.2;             // Inner radius
+    Double_t rMaxPos = rMinPos + 0.133; // Outer radius
+    Double_t halfLengthPos = 19.5;      // Half length of the cylinder (change as necessary)
+
+    TGeoTube* addServicesEta34Neg = new TGeoTube("TRK_addServicesEta34Negsh", rMinNeg, rMaxNeg, halfLengthNeg);
+    TGeoTranslation* transServicesEta34Neg = new TGeoTranslation("TRK_addServicesEta34NegZ", 0, 0, -1 * (39.0 + halfLengthNeg));
+    transServicesEta34Neg->RegisterYourself();
+
+    TGeoTube* addServicesEta34Pos = new TGeoTube("TRK_addServicesEta34Possh", rMinPos, rMaxPos, halfLengthPos);
+    TGeoTranslation* transServicesEta34Pos = new TGeoTranslation("TRK_addServicesEta34PosZ", 0, 0, 1 * (36. + halfLengthPos));
+    transServicesEta34Pos->RegisterYourself();
+
+    subtractorsFormula += "+TRK_addServicesEta34Negsh:TRK_addServicesEta34NegZ";
+    subtractorsFormula += "+TRK_addServicesEta34Possh:TRK_addServicesEta34PosZ";
   }
 
   if (!mIsFT3Activated) {

@@ -184,16 +184,28 @@ void TRKServices::createColdplate(TGeoVolume* motherVolume)
   TGeoMedium* Aluminum = new TGeoMedium("Aluminum", 1, matAluminum);
 
   // Define the cylinder dimensions
-  Double_t rmin = 3.5;          // Inner radius
-  Double_t rmax = rmin + 0.133; // Outer radius
-  Double_t halfLength = 30.5;   // Half length of the cylinder (change as necessary)
+  Double_t rMinNeg = 3.5;             // Inner radius
+  Double_t rMaxNeg = rMinNeg + 0.133; // Outer radius + thickness (def 0.133, 0.33% X0 = 0.0294, 2% X0 = 0.1779, 3% X0 = 0.2669)
+  Double_t halfLengthNeg = 30.5;      // Half length of the cylinder (change as necessary)
 
-  TGeoTube* addServicesEta34 = new TGeoTube("TRK_addServicesEta34sh", rmin, rmax, halfLength);
-  TGeoVolume* addServicesEta34Volume = new TGeoVolume("TRK_addServicesEta34", addServicesEta34, Aluminum);
-  TGeoTranslation* trans = new TGeoTranslation(0, 0, -1 * (39.0 + halfLength));
-  coldPlateVolume->SetVisibility(1);
-  coldPlateVolume->SetLineColor(9);
-  motherVolume->AddNode(addServicesEta34Volume, 1, trans);
+  Double_t rMinPos = 3.2;             // Inner radius
+  Double_t rMaxPos = rMinPos + 0.133; // Outer radius
+  Double_t halfLengthPos = 19.5;      // Half length of the cylinder (change as necessary)
+
+  TGeoTube* addServicesEta34Neg = new TGeoTube("TRK_addServicesEta34Negsh", rMinNeg, rMaxNeg, halfLengthNeg);
+  TGeoVolume* addServicesEta34NegVolume = new TGeoVolume("TRK_addServicesEta34Neg", addServicesEta34Neg, Aluminum);
+  TGeoTranslation* transServicesEta34Neg = new TGeoTranslation(0, 0, -1 * (39.0 + halfLengthNeg));
+  addServicesEta34NegVolume->SetVisibility(1);
+  addServicesEta34NegVolume->SetLineColor(9);
+
+  TGeoTube* addServicesEta34Pos = new TGeoTube("TRK_addServicesEta34Possh", rMinPos, rMaxPos, halfLengthPos);
+  TGeoVolume* addServicesEta34PosVolume = new TGeoVolume("TRK_addServicesEta34Pos", addServicesEta34Pos, Aluminum);
+  TGeoTranslation* transServicesEta34Pos = new TGeoTranslation(0, 0, 1 * (36. + halfLengthPos));
+  addServicesEta34PosVolume->SetVisibility(1);
+  addServicesEta34PosVolume->SetLineColor(9);
+
+  motherVolume->AddNode(addServicesEta34NegVolume, 1, transServicesEta34Neg);
+  motherVolume->AddNode(addServicesEta34PosVolume, 1, transServicesEta34Pos);
 }
 
 void TRKServices::createOuterDisksServices(TGeoVolume* motherVolume)
@@ -212,7 +224,7 @@ void TRKServices::createOuterDisksServices(TGeoVolume* motherVolume)
     float siO2FiberThick = 0.5 * 0.212;
     float peFiberThick = 0.5 * 0.212;
 
-    float rMinInnerServices = 68.5f;                                           // 68.5cm
+    float rMinInnerServices = 45.5f;                                           // 68.5cm
     float zLengthInnerServices = 201.f;                                        // 201cm
     float translation = (int)orientation * (149.f + zLengthInnerServices / 2); // ±149cm
 
@@ -332,6 +344,9 @@ void TRKServices::createMiddleServices(TGeoVolume* motherVolume)
     motherVolume->AddNode(middleBarrelCoolingPUVolume, 1, combiTrans);
     motherVolume->AddNode(middleBarrelCoolingH2OVolume, 1, combiTrans);
   }
+  
+  LOGP(info, "Building middle barrel connection disks");
+
   // Middle barrel connection disks
   const float rMinMiddleBarrelDisk = 5.68f;
   const float rMaxMiddleBarrelDisk = 35.f;
@@ -370,8 +385,10 @@ void TRKServices::createMiddleServices(TGeoVolume* motherVolume)
     motherVolume->AddNode(middleBarrelConnDiskH2OVolume, 1, combiTransPEPower);
   }
 
+  LOGP(info, "Building barrel to forward connection disks");
+
   // Barrel to forward connection disks
-  float rMaxMiddleServicesBarFwd = 74.5f + siO2FiberThick + peFiberThick + cuPowerThick + pePowerThick + puCoolingThick + h2oCoolingThick;
+  float rMaxMiddleServicesBarFwd = 51.5f + siO2FiberThick + peFiberThick + cuPowerThick + pePowerThick + puCoolingThick + h2oCoolingThick;
   for (auto& orientation : {Orientation::kASide, Orientation::kCSide}) {
     // Create fibers: 3.07mm, 50% SiO2, 50% PE
     TGeoTube* middleBarFwdFiberSIO2 = new TGeoTube("TRK_MIDBARFWD_FIBER_SIO2sh", rMinMiddleBarrel, rMaxMiddleServicesBarFwd, siO2FiberThick);
@@ -411,6 +428,8 @@ void TRKServices::createMiddleServices(TGeoVolume* motherVolume)
     motherVolume->AddNode(middleBarFwdCoolingH2OVolume, 1, combiTransCoolingH2O);
   }
 
+  LOGP(info, "Building forward part");
+  
   // Forward part
   const float zLengthMiddleServicesFwd = 350.f - (143.f + totalThickness);
 
@@ -418,7 +437,7 @@ void TRKServices::createMiddleServices(TGeoVolume* motherVolume)
     // Create fibers: 3.07mm, 50% SiO2, 50% PE
     float siO2FiberThick = 0.5 * 0.307;
     float peFiberThick = 0.5 * 0.307;
-    float rMinMiddleServicesFwd = 74.5f; // 74.5cm
+    float rMinMiddleServicesFwd = 51.5f; // 74.5cm
 
     float translation = (int)orientation * (143.f + totalThickness + zLengthMiddleServicesFwd / 2);
 
@@ -461,6 +480,7 @@ void TRKServices::createMiddleServices(TGeoVolume* motherVolume)
     motherVolume->AddNode(middleFwdCoolingPUVolume, 1, combiTrans);
     motherVolume->AddNode(middleFwdCoolingH2OVolume, 1, combiTrans);
   }
+  LOGP(info, "Building finished");
 }
 
 void TRKServices::createOuterBarrelServices(TGeoVolume* motherVolume)
@@ -476,7 +496,7 @@ void TRKServices::createOuterBarrelServices(TGeoVolume* motherVolume)
   // Fiber 0.269 cm
   const float siO2FiberThick = 0.5 * 0.269;
   const float peFiberThick = 0.5 * 0.269;
-  float rMinOuterBarrelServices = ((TGeoTube*)motherVolume->GetNode(Form("%s10_1", GeometryTGeo::getTRKLayerPattern()))->GetVolume()->GetShape())->GetRmax();
+  float rMinOuterBarrelServices = ((TGeoTube*)motherVolume->GetNode(Form("%s8_1", GeometryTGeo::getTRKLayerPattern()))->GetVolume()->GetShape())->GetRmax() + 15.;
   const float zLengthOuterBarrelServices = 350.f; // 175cm
 
   TGeoTube* outerBarrelFiberSIO2 = new TGeoTube("TRK_OUTERBARREL_FIBER_SIO2sh", rMinOuterBarrelServices, rMinOuterBarrelServices + siO2FiberThick, zLengthOuterBarrelServices);
