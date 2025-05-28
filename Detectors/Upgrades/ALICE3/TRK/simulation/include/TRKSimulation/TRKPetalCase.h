@@ -26,7 +26,7 @@ class TRKPetalCase
 {
  public:
   TRKPetalCase() = default;
-  TRKPetalCase(Int_t number, TGeoVolume* motherVolume, Bool_t irisOpen);
+  TRKPetalCase(Int_t number, TGeoVolume* motherVolume, Bool_t irisOpen, Float_t petalGapPhi);
   ~TRKPetalCase() = default;
 
   // Sensitive volume list
@@ -58,6 +58,7 @@ class TRKPetalCase
   Double_t mROut;            // cm
   Double_t mRInOpenState;    // cm
   Double_t mPetalCaseLength; // cm
+  Double_t mPetalGapPhi;     // cm, gap between IRIS petals in cm at the radius of 12.247 mm
 
   Double_t mAngularCoverageAzimuthalWall; // Rad // Angular coverage of azimuthal part of wall (equivalent to that of the sensitive volumes)
   Double_t mAngularCoverageRadialWall;    // Rad // Angular coverage of radial part of wall

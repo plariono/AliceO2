@@ -242,7 +242,7 @@ void Detector::createGeometry()
   // Add petal cases (the sensitive layers inside the petal cases get constructed here too)
   auto& trkPars = TRKBaseParam::Instance();
   for (Int_t petalCaseNumber = 0; petalCaseNumber < 4; ++petalCaseNumber) {
-    mPetalCases.emplace_back(petalCaseNumber, vTRK, trkPars.irisOpen);
+    mPetalCases.emplace_back(petalCaseNumber, vTRK, trkPars.irisOpen, trkPars.gapPetals);
     mServices.excavateFromVacuum(mPetalCases[petalCaseNumber].getFullName());
   }
   mServices.registerVacuum(vTRK);

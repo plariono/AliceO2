@@ -26,7 +26,7 @@ namespace o2
 {
 namespace trk
 {
-TRKPetalCase::TRKPetalCase(Int_t number, TGeoVolume* motherVolume, Bool_t irisOpen) : mPetalCaseNumber(number), mOpenState(irisOpen)
+TRKPetalCase::TRKPetalCase(Int_t number, TGeoVolume* motherVolume, Bool_t irisOpen, Float_t petalGapPhi) : mPetalCaseNumber(number), mOpenState(irisOpen), mPetalGapPhi(petalGapPhi)
 {
 
   mWallThickness = .15e-1; // cm // Assume all the walls have the same thickness for now.
@@ -36,7 +36,7 @@ TRKPetalCase::TRKPetalCase(Int_t number, TGeoVolume* motherVolume, Bool_t irisOp
   mPetalCaseLength = 70.;  // cm
 
   // Calculate angular coverages of azimuthal part of wall (equivalent to that of the sensitive volumes)
-  mAngularCoverageAzimuthalWall = (0.25 * (2 * mRIn * TMath::Pi()) - 2 * mWallThickness) / mRIn;
+  mAngularCoverageAzimuthalWall = 360.0 - (mPetalGapPhi / 0.12247) * TMath::RadToDeg();
   mAngularCoverageRadialWall = mWallThickness / mRIn;
   mToDeg = 180 / TMath::Pi();
 
@@ -141,9 +141,10 @@ void TRKPetalCase::constructDetectionPetals(TGeoVolume* motherVolume)
 {
   // Add petal layers
   // layerNumber, layerName, rIn, angularCoverage, zLength, layerx2X0
-  mPetalLayers.emplace_back(0, Form("%s_LAYER%d", mPetalCaseName.Data(), 0), 0.5f, mAngularCoverageAzimuthalWall, 50.f, 1.e-3);
-  mPetalLayers.emplace_back(1, Form("%s_LAYER%d", mPetalCaseName.Data(), 1), 1.2f, mAngularCoverageAzimuthalWall, 50.f, 1.e-3);
-  mPetalLayers.emplace_back(2, Form("%s_LAYER%d", mPetalCaseName.Data(), 2), 2.5f, mAngularCoverageAzimuthalWall, 50.f, 1.e-3);
+  const Float_t arc1 = 0.6247; // in cm
+  mPetalLayers.emplace_back(0, Form("%s_LAYER%d", mPetalCaseName.Data(), 0), 0.5f, (arc1 / 0.5f) * TMath::RadToDeg(), 50.f, 1.e-3);
+  mPetalLayers.emplace_back(1, Form("%s_LAYER%d", mPetalCaseName.Data(), 1), 1.2f, (360.0f) - (0.12f / 1.2f) * TMath::RadToDeg(), 50.f, 1.e-3);
+  mPetalLayers.emplace_back(2, Form("%s_LAYER%d", mPetalCaseName.Data(), 2), 2.5f, (360.0f) - (0.12f / 2.5f) * TMath::RadToDeg(), 50.f, 1.e-3);
   for (Int_t i = 0; i < mPetalLayers.size(); ++i) {
     mPetalLayers[i].createLayer(motherVolume, mAzimuthalWallCombiTrans);
   }

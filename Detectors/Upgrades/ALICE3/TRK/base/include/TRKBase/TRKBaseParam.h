@@ -29,6 +29,7 @@ enum eLayout {
 struct TRKBaseParam : public o2::conf::ConfigurableParamHelper<TRKBaseParam> {
   std::string configFile = "";
   float serviceTubeX0 = 0.02f; // X0 Al2O3
+  float gapPetals = 0.04; // gap between IRIS petals in cm
   Bool_t irisOpen = false;
 
   eLayout layoutML = kCylinder; // Type of segmentation for the middle layers
